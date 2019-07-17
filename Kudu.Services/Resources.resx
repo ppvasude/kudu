@@ -315,4 +315,13 @@
   <data name="Error_RunFromRemoteZipConfigured" xml:space="preserve">
     <value>Run-From-Zip is set to a remote URL using WEBSITE_USE_ZIP app setting. Deployment is not supported in this configuration.</value>
   </data>
+  <data name="LastScanMsg" xml:space="preserve">
+    <value>Check reults of last scan</value>
+  </data>
+  <data name="NoScanModifiedFiles" xml:space="preserve">
+    <value>No files modified since last scan</value>
+  </data>
+  <data name="ScanInProgress" xml:space="preserve">
+    <value>Scan is already in progress.</value>
+  </data>
 </root>
