@@ -143,6 +143,15 @@
     <Compile Include="Infrastructure\RS.cs" />
     <Compile Include="Infrastructure\StringUtils.cs" />
     <Compile Include="Jobs\ContinuousJob.cs" />
+    <Compile Include="Scan\InfectedFileObject.cs" />
+    <Compile Include="Scan\IScanManager.cs" />
+    <Compile Include="Scan\ScanDetail.cs" />
+    <Compile Include="Scan\ScanOverviewResult.cs" />
+    <Compile Include="Scan\ScanReport.cs" />
+    <Compile Include="Scan\ScanRequestResult.cs" />
+    <Compile Include="Scan\ScanStatus.cs" />
+    <Compile Include="Scan\ScanStatusResult.cs" />
+    <Compile Include="Scan\ScanUrl.cs" />
     <Compile Include="Settings\DiagnosticsSettings.cs" />
     <Compile Include="Jobs\JobSettings.cs" />
     <Compile Include="Jobs\IContinuousJobsManager.cs" />

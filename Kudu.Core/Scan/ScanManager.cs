@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -21,10 +22,10 @@ namespace Kudu.Core.Scan
 
         private readonly ITracer _tracer;
        // private readonly AllSafeLinuxLock _scanLock;
-        private static readonly string DATE_TIME_FORMAT = "yyyy-MM-dd_HH-mm-ssZ";
+        private const string DATE_TIME_FORMAT = "yyyy-MM-dd_HH-mm-ssZ";
        // private string tempScanFilePath = null;
 
-        public ScanManager(ITracer tracer, IDictionary<string, IOperationLock> namedLocks)
+        public ScanManager(ITracer tracer/*, IDictionary<string, IOperationLock> namedLocks*/)
         {
             _tracer = tracer;
           //  _scanLock = (AllSafeLinuxLock) namedLocks["deployment"];
@@ -49,6 +50,7 @@ namespace Kudu.Core.Scan
 
         }
 
+        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         private Boolean CheckModifications(String mainScanDirPath)
         {
             //Create path of manifest file
@@ -343,7 +345,8 @@ namespace Kudu.Core.Scan
                 return report;
         }
 
-        private ScanDetail GetScanParsedLogs(string currLogPath)
+        [SuppressMessage("Microsoft.Globalization", "CA1307:behavior of 'string.IndexOf(string)' could vary based on the current user's locale settings")]
+        private static ScanDetail GetScanParsedLogs(string currLogPath)
         {
             ScanDetail result = null;
             if (FileSystemHelpers.FileExists(currLogPath))
@@ -397,6 +400,7 @@ namespace Kudu.Core.Scan
             return result;
         }
 
+        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         private static ScanStatusResult ReadScanStatusFile(String scanId, String mainScanDirPath, String fileName,String folderName)
         {
             ScanStatusResult obj = null;
@@ -436,12 +440,12 @@ namespace Kudu.Core.Scan
             }
         }
 
-        private string GetTempScanFilePath(String mainScanDirPath)
+        private static string GetTempScanFilePath(String mainScanDirPath)
         {
             return Path.Combine(mainScanDirPath, Constants.TempScanFile);
         }
 
-        public async Task<bool> PerformBackgroundScan(ITracer _tracer, /*AllSafeLinuxLock _scanLock,*/ String folderPath,CancellationToken token, String scanId, String mainScanDirPath)
+        public async Task<bool> PerformBackgroundScan(ITracer _tracer_scan, /*AllSafeLinuxLock _scanLock,*/ String folderPath,CancellationToken token, String scanId, String mainScanDirPath)
         {
 
             var successfulScan = true;
@@ -457,7 +461,7 @@ namespace Kudu.Core.Scan
 
 
                     String logFilePath = Path.Combine(folderPath, Constants.ScanLogFile);
-                    _tracer.Trace("Starting Scan {0}, ScanCommand: {1}, LogFile: {2}", scanId, Constants.ScanCommand, logFilePath);
+                    _tracer_scan.Trace("Starting Scan {0}, ScanCommand: {1}, LogFile: {2}", scanId, Constants.ScanCommand, logFilePath);
 
                     UpdateScanStatus(folderPath, ScanStatus.Executing);
 
@@ -484,20 +488,20 @@ namespace Kudu.Core.Scan
                         if (token.IsCancellationRequested || (tempScanFilePath != null && !FileSystemHelpers.FileExists(tempScanFilePath)))
                         {
                             //Kill process
-                            _executingProcess.Kill(true, _tracer);
+                            _executingProcess.Kill(true, _tracer_scan);
                             //Wait for process to be completely killed
                             _executingProcess.WaitForExit();
                             successfulScan = false;
                             if (token.IsCancellationRequested)
                             {
-                                _tracer.Trace("Scan {0} has timed out at {1}", scanId, DateTime.UtcNow.ToString("yyy-MM-dd_HH-mm-ssZ"));
+                                _tracer_scan.Trace("Scan {0} has timed out at {1}", scanId, DateTime.UtcNow.ToString("yyy-MM-dd_HH-mm-ssZ"));
 
                                 //Update status file
                                 UpdateScanStatus(folderPath, ScanStatus.TimeoutFailure);
                             }
                             else
                             {
-                                _tracer.Trace("Scan {0} has been force stopped at {1}", scanId, DateTime.UtcNow.ToString("yyy-MM-dd_HH-mm-ssZ"));
+                                _tracer_scan.Trace("Scan {0} has been force stopped at {1}", scanId, DateTime.UtcNow.ToString("yyy-MM-dd_HH-mm-ssZ"));
 
                                 //Update status file
                                 UpdateScanStatus(folderPath, ScanStatus.ForceStopped);
@@ -517,12 +521,12 @@ namespace Kudu.Core.Scan
                         if (_executingProcess.ExitCode != 0)
                         {
                             UpdateScanStatus(folderPath, ScanStatus.Failed);
-                            _tracer.Trace("Scan {0} has terminated with exit code {1}. More info found in {2}", scanId, _executingProcess.ExitCode, logFilePath);
+                            _tracer_scan.Trace("Scan {0} has terminated with exit code {1}. More info found in {2}", scanId, _executingProcess.ExitCode, logFilePath);
                         }
                         else
                         {
                             UpdateScanStatus(folderPath, ScanStatus.Success);
-                            _tracer.Trace("Scan {0} is Successful", scanId);
+                            _tracer_scan.Trace("Scan {0} is Successful", scanId);
                         }
                     }
 
@@ -543,7 +547,7 @@ namespace Kudu.Core.Scan
                 return results;
         }
 
-        private IEnumerable<ScanOverviewResult> EnumerateResults(String mainScanDir)
+        private static IEnumerable<ScanOverviewResult> EnumerateResults(String mainScanDir)
         {
             if (FileSystemHelpers.DirectoryExists(mainScanDir))
             {

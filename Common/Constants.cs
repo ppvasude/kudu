@@ -133,16 +133,16 @@ namespace Kudu
 
         //Scan functionality strings
         public const string ScanLockFile = "scan.lock";
-        public static string ScanStatusFile = "status.json";
-        public static string ScanLogFile = "scan_log.log";
-        public static string ScanFolderName = "Scan_";
-        public static string MaxScans = "2";
-        public static string ScanDir = "/home/site/wwwroot";
-        public static string ScriptPath = "/custom_scripts/daily_scan_script.sh";
-        public static string ScanCommand = ScriptPath + " " + ScanDir;
-        public static string ScanTimeOutMillSec = "500000";
-        public static string ScanManifest = "modified_times.json";
-        public static string AggregrateScanResults = "aggregrate_scans.log";
-        public static string TempScanFile = "temp_scan_monitor";
+        public const string ScanStatusFile = "status.json";
+        public const string ScanLogFile = "scan_log.log";
+        public const string ScanFolderName = "Scan_";
+        public const string MaxScans = "2";
+        public const string ScanDir = "/home/site/wwwroot";
+        public const string ScriptPath = "/custom_scripts/daily_scan_script.sh";
+        public const string ScanCommand = ScriptPath + " " + ScanDir;
+        public const string ScanTimeOutMillSec = "500000";
+        public const string ScanManifest = "modified_times.json";
+        public const string AggregrateScanResults = "aggregrate_scans.log";
+        public const string TempScanFile = "temp_scan_monitor";
     }
 }

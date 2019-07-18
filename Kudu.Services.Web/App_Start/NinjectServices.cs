@@ -570,6 +570,34 @@ namespace Kudu.Services.Web.App_Start
             routes.MapHttpRoute("delete-function", "api/functions/{name}", new { controller = "Function", action = "Delete" }, new { verb = new HttpMethodConstraint("DELETE") });
             routes.MapHttpRoute("download-functions", "api/functions/admin/download", new { controller = "Function", action = "DownloadFunctions" }, new { verb = new HttpMethodConstraint("GET") });
 
+            // Initiate Scan 
+            routes.MapHttpRoute("start-clamscan-timeout", "api/scan/start/{timeout}",
+                new { controller = "Scan", action = "ExecuteScan" },
+                new { verb = new HttpMethodConstraint("GET") });
+            routes.MapHttpRoute("start-clamscan", "api/scan/start/",
+                new { controller = "Scan", action = "ExecuteScan" },
+                new { verb = new HttpMethodConstraint("GET") });
+
+            //Get scan status
+            routes.MapHttpRoute("get-scan-status", "/api/scan/{scanId}/track",
+                new { controller = "Scan", action = "GetScanStatus" },
+                new { verb = new HttpMethodConstraint("GET") });
+
+            //Get unique scan result
+            routes.MapHttpRoute("get-scan-result", "/api/scan/{scanId}/result",
+                new { controller = "Scan", action = "GetScanLog" },
+                new { verb = new HttpMethodConstraint("GET") });
+
+            //Get all scan result
+            routes.MapHttpRoute("get-all-scan-result", "/api/scan/results",
+                new { controller = "Scan", action = "GetScanResults" },
+                new { verb = new HttpMethodConstraint("GET") });
+
+            //Stop scan
+            routes.MapHttpRoute("stop-scan", "/api/scan/stop",
+                new { controller = "Scan", action = "StopScan" },
+                new { verb = new HttpMethodConstraint("DELETE") });
+
             // Container Hook Endpoint
             if (!OSDetector.IsOnWindows() || (OSDetector.IsOnWindows() && EnvironmentHelper.IsWindowsContainers()))
             {
