@@ -21,14 +21,14 @@ namespace Kudu.Core.Scan
     {
 
         private readonly ITracer _tracer;
-       // private readonly AllSafeLinuxLock _scanLock;
+        private readonly IOperationLock _scanLock;
         private const string DATE_TIME_FORMAT = "yyyy-MM-dd_HH-mm-ssZ";
        // private string tempScanFilePath = null;
 
-        public ScanManager(ITracer tracer/*, IDictionary<string, IOperationLock> namedLocks*/)
+        public ScanManager(ITracer tracer, IOperationLock scanLock)
         {
             _tracer = tracer;
-          //  _scanLock = (AllSafeLinuxLock) namedLocks["deployment"];
+            _scanLock = scanLock;
         }
 
         private static void UpdateScanStatus(String folderPath,ScanStatus status)
@@ -161,14 +161,14 @@ namespace Kudu.Core.Scan
                 String filePath = Path.Combine(folderPath, Constants.ScanStatusFile);
                 Boolean hasFileModifcations = true;
 
-                /*if (_scanLock.IsHeld)
+                if (_scanLock.IsHeld)
                 {
                     return ScanRequestResult.ScanAlreadyInProgress;
-                }*/
+                }
 
                 //Create unique scan folder and scan status file
-                /*_scanLock.LockOperation(() =>
-                {*/
+                _scanLock.LockOperation(() =>
+                {
                     //Check if files are modified
                     if (CheckModifications(mainScanDirPath))
                     {
@@ -194,8 +194,8 @@ namespace Kudu.Core.Scan
                         hasFileModifcations = false;
                     }
 
-/*
-                }, "Creating unique scan folder", TimeSpan.Zero);*/
+
+                }, "Creating unique scan folder", TimeSpan.Zero);
 
                 if (!hasFileModifcations)
                 {
@@ -453,9 +453,9 @@ namespace Kudu.Core.Scan
             await Task.Run(() =>
             {
 
-                /*_scanLock.LockOperation(() =>
+                _scanLock.LockOperation(() =>
                 {
-                    _scanLock.SetLockMsg(Resources.ScanUnderwayMsg);*/
+                    //_scanLock.SetLockMsg(Resources.ScanUnderwayMsg);
 
                     String statusFilePath = Path.Combine(folderPath, Constants.ScanStatusFile);
 
@@ -470,8 +470,8 @@ namespace Kudu.Core.Scan
                     {
                         StartInfo = new ProcessStartInfo
                         {
-                            FileName = "/bin/bash",
-                            Arguments = "-c \"" + escapedArgs + "\"",
+                            FileName = "cmd.exe",
+                            Arguments = "/c \"" + escapedArgs + "\"",
                             RedirectStandardOutput = true,
                             UseShellExecute = false,
                             CreateNoWindow = true,
@@ -483,6 +483,7 @@ namespace Kudu.Core.Scan
                     //Check if process is completing before timeout
                     while (!_executingProcess.HasExited)
                     {
+                     //   _executingProcess.Kill(true, _tracer_scan);
                         //Process still running, but timeout is done
                         //Or Process is still running but scan has been stopped by user
                         if (token.IsCancellationRequested || (tempScanFilePath != null && !FileSystemHelpers.FileExists(tempScanFilePath)))
@@ -531,9 +532,9 @@ namespace Kudu.Core.Scan
                     }
 
 
-              /*  }, "Performing continuous scan", TimeSpan.Zero);
+                }, "Performing continuous scan", TimeSpan.Zero);
 
-                _scanLock.SetLockMsg("");*/
+              //  _scanLock.SetLockMsg("");
 
             });
 

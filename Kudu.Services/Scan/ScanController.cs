@@ -25,6 +25,10 @@ namespace Kudu.Services.Scan
         private IEnvironment _webAppRuntimeEnvironment;
         string mainScanDirPath = null;
 
+        public ScanController()
+        {
+
+        }
         public ScanController(ITracer tracer, IScanManager scanManager, IEnvironment webAppRuntimeEnvironment)
         {
             _tracer = tracer;

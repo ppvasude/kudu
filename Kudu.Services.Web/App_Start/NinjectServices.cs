@@ -13,6 +13,7 @@ using System.Web.Http;
 using System.Web.Routing;
 using Kudu.Contracts.Infrastructure;
 using Kudu.Contracts.Jobs;
+using Kudu.Contracts.Scan;
 using Kudu.Contracts.Settings;
 using Kudu.Contracts.SiteExtensions;
 using Kudu.Contracts.SourceControl;
@@ -26,6 +27,7 @@ using Kudu.Core.Helpers;
 using Kudu.Core.Hooks;
 using Kudu.Core.Infrastructure;
 using Kudu.Core.Jobs;
+using Kudu.Core.Scan;
 using Kudu.Core.Settings;
 using Kudu.Core.SiteExtensions;
 using Kudu.Core.SourceControl;
@@ -336,6 +338,10 @@ namespace Kudu.Services.Web.App_Start
             // Command executor
             kernel.Bind<ICommandExecutor>().To<CommandExecutor>().InRequestScope();
 
+            // Scan Manager
+            kernel.Bind<IScanManager>().To<ScanManager>()
+                                             .InRequestScope();
+
             MigrateSite(environment, noContextDeploymentsSettingsManager);
             RemoveOldTracePath(environment);
             RemoveTempFileFromUserDrive(environment);
@@ -579,22 +585,22 @@ namespace Kudu.Services.Web.App_Start
                 new { verb = new HttpMethodConstraint("GET") });
 
             //Get scan status
-            routes.MapHttpRoute("get-scan-status", "/api/scan/{scanId}/track",
+            routes.MapHttpRoute("get-scan-status", "api/scan/{scanId}/track",
                 new { controller = "Scan", action = "GetScanStatus" },
                 new { verb = new HttpMethodConstraint("GET") });
 
             //Get unique scan result
-            routes.MapHttpRoute("get-scan-result", "/api/scan/{scanId}/result",
+            routes.MapHttpRoute("get-scan-result", "api/scan/{scanId}/result",
                 new { controller = "Scan", action = "GetScanLog" },
                 new { verb = new HttpMethodConstraint("GET") });
 
             //Get all scan result
-            routes.MapHttpRoute("get-all-scan-result", "/api/scan/results",
+            routes.MapHttpRoute("get-all-scan-result", "api/scan/results",
                 new { controller = "Scan", action = "GetScanResults" },
                 new { verb = new HttpMethodConstraint("GET") });
 
             //Stop scan
-            routes.MapHttpRoute("stop-scan", "/api/scan/stop",
+            routes.MapHttpRoute("stop-scan", "api/scan/stop",
                 new { controller = "Scan", action = "StopScan" },
                 new { verb = new HttpMethodConstraint("DELETE") });
 

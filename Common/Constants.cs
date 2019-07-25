@@ -137,8 +137,8 @@ namespace Kudu
         public const string ScanLogFile = "scan_log.log";
         public const string ScanFolderName = "Scan_";
         public const string MaxScans = "2";
-        public const string ScanDir = "/home/site/wwwroot";
-        public const string ScriptPath = "/custom_scripts/daily_scan_script.sh";
+        public const string ScanDir = "C:\\Users\\t-puvasu\\Desktop\\Demo-App\\nodejs-docs-hello-world";
+        public const string ScriptPath = "C:\\Users\\t-puvasu\\Desktop\\Scripts\\scan.bat";
         public const string ScanCommand = ScriptPath + " " + ScanDir;
         public const string ScanTimeOutMillSec = "500000";
         public const string ScanManifest = "modified_times.json";
