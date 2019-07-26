@@ -208,7 +208,7 @@ namespace Kudu.Core.Scan
                     var successfullyScanned = PerformBackgroundScan(_tracer, /*_scanLock,*/ folderPath, timeoutCancellationTokenSource.Token,id,mainScanDirPath);
 
                     //Wait till scan task completes or the timeout goes off
-                    if (await Task.WhenAny(successfullyScanned, Task.Delay(Int32.Parse(timeout), timeoutCancellationTokenSource.Token)) == successfullyScanned)
+                    if ((await Task.WhenAny(successfullyScanned, Task.Delay(Int32.Parse(timeout), timeoutCancellationTokenSource.Token))) == successfullyScanned)
                     {
                         //If scan task completes before timeout
                         //Delete excess scan folders, just keep the maximum number allowed
