@@ -23,6 +23,6 @@ namespace Kudu.Contracts.Scan
         IEnumerable<ScanOverviewResult> GetResults(String mainScanDir);
 
         void StopScan(String mainScanDirPath);
-     }
+    }
 }
 

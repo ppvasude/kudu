@@ -14,8 +14,8 @@ namespace Kudu.Contracts.Scan
         [JsonProperty(PropertyName = "scan_results_url")]
         public String ScanResultsUrl { get; set; }
 
-       /* [JsonIgnore]
-        public DateTime ReceivedTime { get; set; }*/
+        /* [JsonIgnore]
+         public DateTime ReceivedTime { get; set; }*/
 
         [JsonIgnore]
         [SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes", Justification = "to provide ARM spceific name")]
